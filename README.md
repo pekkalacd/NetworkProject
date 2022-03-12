@@ -20,6 +20,3 @@ as an equation, an error message is sent back to the client, but the connection 
 
 Only when the client enters **exit** will the client disconnect from the server. At which point, the duration for how long that client <br>
 was connected is outputted to the console on the server side. The server continues to listen for any other clients.<br>
-
-### example
-![image](https://user-images.githubusercontent.com/34849400/158007851-5e5c408b-4347-43fa-abf2-0670ac612368.png)
