@@ -2,6 +2,7 @@ import socket as sk
 import threading
 import time
 import sys
+import logging as lg
 from dataclasses import dataclass
 from socketmixin import SocketMixin, Socket
 
@@ -37,6 +38,7 @@ def client_handler(connection, addr):
 
     global CLIENTS
 
+    lg.info(f'[NEW CONNECTION] client at {addr} has connected')
     printflush(f"[NEW CONNECTION] client at {addr} has connected")
 
     connected = True
