@@ -38,7 +38,7 @@ def client_handler(connection, addr):
 
     global CLIENTS
 
-    lg.info(f'[NEW CONNECTION] client at {addr} has connected')
+    lg.info(f"[NEW CONNECTION] client at {addr} has connected")
     printflush(f"[NEW CONNECTION] client at {addr} has connected")
 
     connected = True
@@ -52,6 +52,7 @@ def client_handler(connection, addr):
             client_id, equation = connection.recv(msg_len).decode('utf-8').split(',')
 
             if not id_generated:
+                lg.info(f"[CLIENT-ID-GENERATED] for {addr} => {client_id}")
                 printflush(f"[CLIENT-ID-GENERATED] for {addr} => {client_id}")
                 id_generated = True
 
@@ -61,16 +62,19 @@ def client_handler(connection, addr):
             if equation == "exit":
                 connected = False
 
+            lg.info(f"[CLIENT {client_id}] {equation}")
             printflush(f"[CLIENT {client_id}] {equation}")
 
             try:
                 solution = str(eval(equation))
                 connection.send(solution.encode('utf-8'))
             except Exception:
+                lg.warning("Bad Request:: Must be evaluable equation".encode("utf-8"))
                 connection.send("Bad Request:: Must be evaluable equation".encode("utf-8"))
 
     CLIENTS[client_id].update({"end": time.time()})
     CLIENTS[client_id].update({"duration": format_time(CLIENTS[client_id]["end"] - CLIENTS[client_id]["start"])})
+    lg.info(f"[DISCONNECTION] client {client_id} | {addr} :: duration {CLIENTS[client_id]['duration']}")
     printflush(f"[DISCONNECTION] client {client_id} | {addr} :: duration {CLIENTS[client_id]['duration']}")
     connection.close()
 
@@ -80,15 +84,16 @@ def client_handler(connection, addr):
 def start():
 
     with Server(host="localhost",port=5566) as welcome:
-
         while True:
-
             connection, addr = welcome.accept()
             thread = threading.Thread(target=client_handler, args=(connection, addr))
             thread.start()
-            print(f"[ACTIVE CONNECTIONS] {threading.activeCount()-1}")
+            lg.info(f"[ACTIVE CONNECTIONS] {threading.active_count()-1}")
+            print(f"[ACTIVE CONNECTIONS] {threading.active_count()-1}")
 
 
+lg.basicConfig(filename='calc_server.log', encoding='utf-8', level=lg.INFO)
+lg.info(f"[LISTENING] Server is listening on 'localhost'")
 print(f"[LISTENING] Server is listening on 'localhost'")
 start()
 

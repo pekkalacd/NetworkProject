@@ -1,0 +1,13 @@
+INFO:root:[LISTENING] Server is listening on 'localhost'
+INFO:root:[NEW CONNECTION] client at ('127.0.0.1', 62729) has connected
+INFO:root:[ACTIVE CONNECTIONS] 1
+INFO:root:[CLIENT-ID-GENERATED] for ('127.0.0.1', 62729) => 6Nh
+INFO:root:[CLIENT 6Nh] 4 * 10 + 2 - 11
+INFO:root:[NEW CONNECTION] client at ('127.0.0.1', 62733) has connected
+INFO:root:[ACTIVE CONNECTIONS] 2
+INFO:root:[CLIENT-ID-GENERATED] for ('127.0.0.1', 62733) => MZg
+INFO:root:[CLIENT MZg] 11 * 11 * 11
+INFO:root:[CLIENT 6Nh] exit
+INFO:root:[DISCONNECTION] client 6Nh | ('127.0.0.1', 62729) :: duration 00:00:32
+INFO:root:[CLIENT MZg] exit
+INFO:root:[DISCONNECTION] client MZg | ('127.0.0.1', 62733) :: duration 00:00:20
