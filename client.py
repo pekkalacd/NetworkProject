@@ -3,6 +3,7 @@ import sys
 import os
 import random
 import string
+import ipaddress as ip
 from socketmixin import SocketMixin, Socket
 from dataclasses import dataclass
 
@@ -32,15 +33,19 @@ def send_message(client_socket, msg: str):
     client_socket.send(message)
 
 
-def unique_id() -> str:
+def unique_id(SERVER_HOST, client_socket) -> str:
     pool = string.ascii_letters + string.digits
-    pid = os.getpid()
+    if SERVER_HOST == 'localhost':
+        int_id = os.getpid()
+    else:
+        int_id = int(ip.ip_address(client_socket.gethostname()))
+    
     client_id = ''
-    while pid:
-        r = pid % len(pool)
-        pid = int(pid / len(pool))
+    while int_id:
+        r = int_id % len(pool)
+        int_id = int(int_id / len(pool))
         client_id += pool[r]
-    # client_id: str = ''.join(random.choices(pool,k=7))
+
     return client_id
 
 
@@ -48,7 +53,7 @@ def run_client(SERVER_HOST, SERVER_PORT):
     while True:
 
         with Client(SERVER_HOST,SERVER_PORT) as client_socket:
-            client_id: str = unique_id()
+            client_id: str = unique_id(SERVER_HOST, client_socket)
 
             while (equation := input().lower()) != "exit":
                 # parse user input
