@@ -24,10 +24,25 @@ class Server(SocketMixin):
         return sock
 
 
+############################################################################
+# function:     printflush()
+# parameters:   message: str
+# return:       none
+# description:  This function prints and flushes the server message to 
+#               stdout.
+############################################################################
 def printflush(msg: str):
     print(msg)
     sys.stdout.flush()
 
+
+############################################################################
+# function:     format_time()
+# parameters:   message: str
+# return:       none
+# description:  This function takes a time value and returns it formatted
+#               as a string with hours, minutes, and seconds. 
+############################################################################
 def format_time(timeval: float) -> str:
     m,s = divmod(int(timeval),60)
     h,m = divmod(m,60)
