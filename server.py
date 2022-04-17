@@ -34,20 +34,37 @@ def format_time(timeval: float) -> str:
     return f"{h:02d}:{m:02d}:{s:02d}"
 
 
+############################################################################
+# function:     client_handler()
+# parameters:   socket: socket, ip_address: str
+# return:       none
+# description:  This function confirms session connection, listens for
+#               client requests, processes the client request, and logs
+#               server connection/processing events.
+############################################################################
 def client_handler(connection, addr):
 
     global CLIENTS
 
-    lg.info(f"NEW_CONNECTION [ addr={addr} ]")
+    # log cient connection & send confirmation message
+    lg.info(f"NEW_CONNECTION [ addr='{addr}' ]")
     printflush(f"[NEW CONNECTION] client at {addr} has connected")
+    #################################################################################
+    # This is where i was thinking we could put a confirmation message to the client
+    # but it isn't outputting to the client properly - need to output as first msg to client
+    # confirmation_msg = "Ready to calculate equations consisting of real numbers\n" \
+    #                     + "supporting addition (x + y), subtraction (x - y),\n" \
+    #                     + "multiplication (x * y), division (x / y), modulus (x % y),\n" \
+    #                     + "and exponents (x**y)"
+    # connection.send(confirmation_msg.encode('utf-8'))
 
     connected = True
     client_id = None
     # id_generated = False
     while connected:
-
+        # process messages received
         if (msg_len := connection.recv(1024).decode('utf-8')):
-
+            # parse message & requesting client
             msg_len = int(msg_len)
             client_id, equation = connection.recv(msg_len).decode('utf-8').split(',')
 
@@ -56,30 +73,41 @@ def client_handler(connection, addr):
             #     printflush(f"[CLIENT-ID-GENERATED] for {addr} => {client_id}")
             #     id_generated = True
 
+            # start client timer
             if client_id not in CLIENTS:
                 CLIENTS[client_id] = {"start":time.time()}
             
             if equation == "exit":
+                connection.send("Session terminated".encode('utf-8'))
                 connected = False
 
-            lg.info(f"CLIENT_REQUEST [ id={client_id} ] = {equation}")
-            printflush(f"[CLIENT {client_id}] {equation}")
+            else:
+                # log client request
+                lg.info(f"CLIENT_REQUEST [ id='{client_id}' ] = '{equation}'")
+                printflush(f"[CLIENT '{client_id}'] '{equation}'")
 
-            try:
-                solution = str(eval(equation))
-                connection.send(solution.encode('utf-8'))
-            except Exception:
-                lg.warning("Bad Request:: Must be evaluable equation".encode("utf-8"))
-                connection.send("Bad Request:: Must be evaluable equation".encode("utf-8"))
+                try:
+                    solution = str(eval(equation))
+                    connection.send(solution.encode('utf-8'))
+                except Exception:
+                    lg.warning("BAD_REQUEST [ id='{client_id}' ] INVALID_EQ = '{equation}'")
+                    connection.send("Bad Request:: Must be evaluable equation".encode("utf-8"))
 
+    # terminate process & log duration
     CLIENTS[client_id].update({"end": time.time()})
     CLIENTS[client_id].update({"duration": format_time(CLIENTS[client_id]["end"] - CLIENTS[client_id]["start"])})
-    lg.info(f"DISCONNECTION [ id={client_id}, addr={addr} ] - DURATION {CLIENTS[client_id]['duration']}")
+    lg.info(f"DISCONNECTION [ id='{client_id}', addr='{addr}' ] - DURATION {CLIENTS[client_id]['duration']}")
     printflush(f"[DISCONNECTION] client {client_id} | {addr} :: duration {CLIENTS[client_id]['duration']}")
     connection.close()
 
 
-
+############################################################################
+# function:     start()
+# parameters:   none
+# return:       none
+# description:  This function starts the server, listens for connections,
+#               and logs connection events.
+############################################################################
 def start():
 
     with Server(host="localhost",port=5566) as welcome:
