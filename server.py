@@ -136,7 +136,9 @@ def start():
             print(f"[ACTIVE CONNECTIONS] {threading.active_count()-1}")
 
 
-lg.basicConfig(filename='calc_server.log', format='%(levelname)s: %(asctime)s - %(message)s', encoding='utf-8', level=lg.INFO)
+lg.basicConfig(handlers=[lg.FileHandler(filename='calc_server.log', encoding='utf-8')], 
+               format='%(levelname)s: %(asctime)s - %(message)s', 
+               level=lg.INFO)
 # lg.info(f"LISTENING [ Server ] {}")
 # print(f"[LISTENING] Server is listening on 'localhost'")
 start()
