@@ -1,6 +1,10 @@
 # NetworkProject
 Project for CS 4390
 
+### preliminary requirements and dependencies
+Please ensure you are using Python version 3.8 or above.
+Ensure you have dataclasses module (pip install dataclasses)
+
 
 ### usage 
 open up two or more terminals, with one designated for the server, and the others as clients. 

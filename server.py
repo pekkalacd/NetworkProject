@@ -61,6 +61,7 @@ def client_handler(connection, addr):
 
     global CLIENTS
 
+
     # log client connection & send confirmation message
     lg.info(f"NEW_CONNECTION [ addr='{addr}' ]")
     printflush(f"[NEW CONNECTION] client at {addr} has connected")
@@ -102,20 +103,20 @@ def client_handler(connection, addr):
 
             else:
                 # log client request
-                lg.info(f"CLIENT_REQUEST [ id='{client_id}' ] = '{equation}'")
+                lg.info(f"CLIENT_REQUEST [ id={client_id} ] = {equation}")
                 printflush(f"[CLIENT '{client_id}'] '{equation}'")
 
                 try:
                     solution = str(eval(equation))
                     connection.send(solution.encode('utf-8'))
                 except Exception:
-                    lg.warning("BAD_REQUEST [ id='{client_id}' ] INVALID_EQ = '{equation}'")
+                    lg.warning("BAD_REQUEST [ id={client_id} ] INVALID_EQ = {equation}")
                     connection.send("Bad Request:: Must be evaluable equation".encode("utf-8"))
 
     # terminate process & log duration
     CLIENTS[client_id].update({"end": time.time()})
     CLIENTS[client_id].update({"duration": format_time(CLIENTS[client_id]["end"] - CLIENTS[client_id]["start"])})
-    lg.info(f"DISCONNECTION [ id='{client_id}', addr='{addr}' ] - DURATION {CLIENTS[client_id]['duration']}")
+    lg.info(f"DISCONNECTION [ id={client_id}, addr={addr} ] - DURATION {CLIENTS[client_id]['duration']}")
     printflush(f"[DISCONNECTION] client {client_id} | {addr} :: duration {CLIENTS[client_id]['duration']}")
     connection.close()
 
