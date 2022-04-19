@@ -61,17 +61,20 @@ def client_handler(connection, addr):
 
     global CLIENTS
 
-    # log cient connection & send confirmation message
+    # log client connection & send confirmation message
     lg.info(f"NEW_CONNECTION [ addr='{addr}' ]")
     printflush(f"[NEW CONNECTION] client at {addr} has connected")
-    #################################################################################
-    # This is where i was thinking we could put a confirmation message to the client
-    # but it isn't outputting to the client properly - need to output as first msg to client
-    # confirmation_msg = "Ready to calculate equations consisting of real numbers\n" \
-    #                     + "supporting addition (x + y), subtraction (x - y),\n" \
-    #                     + "multiplication (x * y), division (x / y), modulus (x % y),\n" \
-    #                     + "and exponents (x**y)"
-    # connection.send(confirmation_msg.encode('utf-8'))
+    
+    # receive initial message from client \r\n 
+    msg_len = int(connection.recv(1024).decode("utf-8"))
+    _,_ = connection.recv(msg_len).decode("utf-8").split(",")
+    
+    # send out confirmation msg - welcome
+    confirmation_msg = "Ready to calculate equations consisting of real numbers\n" \
+                         + "supporting addition (x + y), subtraction (x - y),\n" \
+                         + "multiplication (x * y), division (x / y), modulus (x % y),\n" \
+                         + "and exponents (x**y)"
+    connection.send(confirmation_msg.encode('utf-8'))
 
     connected = True
     client_id = None
@@ -91,6 +94,7 @@ def client_handler(connection, addr):
             # start client timer
             if client_id not in CLIENTS:
                 CLIENTS[client_id] = {"start":time.time()}
+
             
             if equation == "exit":
                 connection.send("Session terminated".encode('utf-8'))

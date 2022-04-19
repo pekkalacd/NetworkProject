@@ -84,7 +84,8 @@ def run_client(SERVER_HOST, SERVER_PORT):
 
         with Client(SERVER_HOST,SERVER_PORT) as client_socket:
             client_id: str = unique_id(SERVER_HOST, client_socket)
-
+            send_message(client_socket, f"{client_id},\r\n")
+            print(str(client_socket.recv(1024),'utf-8'))
             while (equation := input().lower()) != "exit":
                 # parse user input
                 message = f"{client_id},{equation}"
