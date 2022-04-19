@@ -5,6 +5,7 @@ import sys
 import logging as lg
 from dataclasses import dataclass
 from socketmixin import SocketMixin, Socket
+from equation_solver import EquationSolver
 
 
 CLIENTS = dict()
@@ -60,7 +61,9 @@ def format_time(timeval: float) -> str:
 def client_handler(connection, addr):
 
     global CLIENTS
-
+    
+    # creating instance of EquationSolver
+    eqs = EquationSolver()
 
     # log client connection & send confirmation message
     lg.info(f"NEW_CONNECTION [ addr='{addr}' ]")
@@ -107,7 +110,7 @@ def client_handler(connection, addr):
                 printflush(f"[CLIENT '{client_id}'] '{equation}'")
 
                 try:
-                    solution = str(eval(equation))
+                    solution = str(eqs.solve(equation))
                     connection.send(solution.encode('utf-8'))
                 except Exception:
                     lg.warning("BAD_REQUEST [ id={client_id} ] INVALID_EQ = {equation}")
