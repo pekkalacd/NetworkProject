@@ -66,7 +66,7 @@ def client_handler(connection, addr):
     eqs = EquationSolver()
 
     # log client connection & send confirmation message
-    lg.info(f"NEW_CONNECTION [ addr='{addr}' ]")
+    lg.info(f"NEW_CONNECTION [ addr={addr} ]")
     printflush(f"[NEW CONNECTION] client at {addr} has connected")
     
     # receive initial message from client \r\n 
