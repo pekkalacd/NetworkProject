@@ -95,6 +95,7 @@ def run_client(SERVER_HOST, SERVER_PORT):
 
             # send termination request
             send_message(client_socket, f"{client_id},exit")
+            print(str(client_socket.recv(1024),'utf-8'))
             break
 
 
