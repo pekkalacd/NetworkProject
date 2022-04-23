@@ -15,9 +15,6 @@ class EquationSolver(ast.AST):
                     ast.Div: op.truediv,
                     ast.FloorDiv: op.floordiv,
                     ast.Pow: op.pow,
-                    ast.BitXor: op.xor,
-                    ast.BitAnd: op.and_,
-                    ast.BitOr: op.or_,
                     ast.Mod: op.mod}
 
     def __eval(self, node: Union[ast.BinOp, ast.UnaryOp, ast.Num]):
