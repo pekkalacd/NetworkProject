@@ -131,9 +131,9 @@ def client_handler(connection, addr):
 # description:  This function starts the server, listens for connections,
 #               and logs connection events.
 ############################################################################
-def start():
+def start(host: str="localhost", port: int=5566):
 
-    with Server(host="localhost",port=5566) as welcome:
+    with Server(host=host,port=port) as welcome:
         lg.info(f"LISTENING [ Calc_Server ] - {welcome.getsockname()}")
         print(f"[LISTENING] Server is listening on {welcome.getsockname()}")
         while True:
@@ -144,12 +144,19 @@ def start():
             print(f"[ACTIVE CONNECTIONS] {threading.active_count()-1}")
 
 
-lg.basicConfig(handlers=[lg.FileHandler(filename='calc_server.log', encoding='utf-8')], 
-               format='%(levelname)s: %(asctime)s - %(message)s', 
-               level=lg.INFO)
-# lg.info(f"LISTENING [ Server ] {}")
-# print(f"[LISTENING] Server is listening on 'localhost'")
-start()
+if __name__ == "__main__":
+
+    lg.basicConfig(handlers=[lg.FileHandler(filename='calc_server.log', encoding='utf-8')], 
+                   format='%(levelname)s: %(asctime)s - %(message)s', 
+                   level=lg.INFO)
+
+    if len(sys.argv[1:]) != 2:
+        # run server forever @ localhost port 5566
+        start(host="localhost",port=5566)
+    else:
+        # run server @ specified host & port #
+        host, port = sys.argv[1:]
+        start(host=host,port=int(port))
 
 
 
