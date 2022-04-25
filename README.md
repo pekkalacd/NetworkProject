@@ -7,11 +7,15 @@ Ensure you have dataclasses module (pip install dataclasses)
 
 
 ### usage 
-open up two or more terminals, with one designated for the server, and the others as clients. 
+In the case that the server process and each client process are executed on the same local host:
+    open up two or more terminals, with one designated for the server and the others as clients
+    for the server terminal: `$ python server.py`
+    for each client terminal: `$ python client.py`
 
-for the server terminal `$ python server.py`
-
-for the client terminals `$ python client.py`
+In the case that the server process is executed on a host at a different IP address:
+    open up a terminal on each host to run the server process and each client process
+    for the server terminal: `$ python server.py [<host_ip_address> <host_port_number>`
+    for each client terminal: `$ python client.py <server_ip_address> <server_port_number>`
 
 type equations into the client terminals and observe the changes in both client and server consoles
 
